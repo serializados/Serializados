@@ -9,7 +9,7 @@ class peliculasModel
         $this->db = SPDO::singleton();
 		
 		//creamos las tablas
-		$this->db->prepare('CREATE TABLE IF NOT EXISTS `peliculas` (
+		$consulta=$this->db->prepare('CREATE TABLE IF NOT EXISTS `peliculas` (
 		`cod` int(11) NOT NULL AUTO_INCREMENT,
 		`nombre` varchar(255) DEFAULT NULL,
 		`titulo` varchar(255) DEFAULT NULL,
@@ -19,7 +19,7 @@ class peliculasModel
 		`descripcion` varchar(255) DEFAULT NULL,
 		PRIMARY KEY (`cod`)
 		);');	
-		$this->db->execute();
+		$consulta->execute();
 		
 		$data;
 		$data['cod']=1;
@@ -30,7 +30,7 @@ class peliculasModel
 		$data['imagen']="asasda";
 		$data['descripcion']="asdasdasdasad";
 		
-		aniadirPelicula(data);
+		$this->aniadirPelicula($data);
     }
  
     public function aniadirPelicula($pelicula)
@@ -43,8 +43,17 @@ class peliculasModel
 		$imagen=$pelicula['imagen'];
 		$descripcion=$pelicula['descripcion'];
 		
-		$this->db->prepare('INSERT INTO `peliculas` values (:cod,:nombre,:titulo,:autor,:duracion,:imagen,:descripcion)');
-		$this->db->execute();
+		$consulta=$this->db->prepare('INSERT INTO `peliculas`(cod,nombre,titulo,autor,duracion,imagen,descripcion) values (:cod,:nombre,:titulo,:autor,:duracion,:imagen,:descripcion)');
+		
+		$consulta->bindParam(':cod', $cod);
+        $consulta->bindParam(':nombre', $nombre);
+		$consulta->bindParam(':titulo', $titulo);
+		$consulta->bindParam(':autor', $autor);
+		$consulta->bindParam(':duracion', $duracion);
+		$consulta->bindParam(':imagen', $imagen);
+		$consulta->bindParam(':descripcion', $descripcion);
+		
+		$consulta->execute();
 	}
  
    /** public function listadoPeliculas()
@@ -60,10 +69,11 @@ class peliculasModel
 	 public function listadoPeliculas()
     {
         //realizamos la consulta de todos los items
-        $consulta = $this->db->prepare('SELECT * FROM peliculas');
-        $consulta->execute();
+        $listado = $this->db->prepare('SELECT * FROM peliculas');
+        $listado->execute();
+		$resultado=$listado->fetchAll();
         //devolvemos la colección para que la vista la presente.
-        return $consulta;
+        return $resultado;
     }
 	
 }

@@ -16,13 +16,15 @@ class PeliculasController
         $peliculas = new PeliculasModel();
  
         //Le pedimos al modelo todos los items
-        $listado = $items->listadoPeliculas();
+        $listado = $peliculas->listadoPeliculas();
  
         //Pasamos a la vista toda la información que se desea representar
         $data['listado'] = $listado;
  
+		print_r($listado);
+		
         //Finalmente presentamos nuestra plantilla
-        $this->view->show("listar.php", $data);
+       // $this->view->show("listar.php", $data);
     }
 	 public function agregar()
     {
